@@ -1,4 +1,6 @@
-﻿namespace Frostbyte.App.Pages;
+﻿using Microsoft.Maui.Controls;
+
+namespace Frostbyte.App.Pages;
 
 public class CalendarPage : ContentPage
 {

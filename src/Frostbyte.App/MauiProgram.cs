@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
 
 namespace Frostbyte.App;
 
