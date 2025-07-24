@@ -90,15 +90,6 @@
                                       Dark={StaticResource LinkHover}}" />
     </Style>
 
-    <Style TargetType="IndicatorView">
-        <Setter Property="IndicatorColor"
-                Value="{AppThemeBinding Light={StaticResource Gray200},
-                                      Dark={StaticResource Gray500}}" />
-        <Setter Property="SelectedIndicatorColor"
-                Value="{AppThemeBinding Light={StaticResource Gray950},
-                                      Dark={StaticResource Gray100}}" />
-    </Style>
-
     <Style TargetType="Border">
         <!-- always use the CSS input-border color -->
         <Setter Property="Stroke" Value="{StaticResource ControlBorder}" />
@@ -126,24 +117,6 @@
         <Setter Property="Padding" Value="14,10" />
         <Setter Property="MinimumHeightRequest" Value="44" />
         <Setter Property="MinimumWidthRequest" Value="44" />
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="TextColor"
-                                    Value="{AppThemeBinding Light={StaticResource Gray950},
-                                                Dark={StaticResource Gray200}}" />
-                            <Setter Property="BackgroundColor"
-                                    Value="{AppThemeBinding Light={StaticResource Gray200},
-                                                Dark={StaticResource Gray600}}" />
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="PointerOver" />
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
     </Style>
 
     <!-- …and so on for each of your original Styles… -->
@@ -156,20 +129,16 @@
     </Style>
 
     <Style TargetType="Shell" ApplyToDerivedTypes="True">
-        <Setter Property="Shell.BackgroundColor" Value="{StaticResource BodyBackground}" />
-        <Setter Property="Shell.ForegroundColor" Value="{StaticResource BodyText}" />
-        <Setter Property="Shell.TitleColor" Value="{StaticResource BodyText}" />
-        <Setter Property="Shell.DisabledColor" Value="{StaticResource Gray200}" />
-        <Setter Property="Shell.UnselectedColor" Value="{StaticResource Gray200}" />
-        <Setter Property="Shell.NavBarHasShadow" Value="False" />
-        <Setter Property="Shell.TabBarBackgroundColor"
+        <Setter Property="BackgroundColor" Value="{StaticResource BodyBackground}" />
+        <Setter Property="ForegroundColor" Value="{StaticResource BodyText}" />
+        <Setter Property="TitleColor" Value="{StaticResource BodyText}" />
+        <Setter Property="NavBarHasShadow" Value="False" />
+        <Setter Property="TabBarBackgroundColor"
                 Value="{StaticResource BodyBackground}" />
-        <Setter Property="Shell.TabBarForegroundColor"
+        <Setter Property="TabBarForegroundColor"
                 Value="{StaticResource LinkNormal}" />
-        <Setter Property="Shell.TabBarTitleColor"
+        <Setter Property="TabBarTitleColor"
                 Value="{StaticResource LinkNormal}" />
-        <Setter Property="Shell.TabBarUnselectedColor"
-                Value="{StaticResource Gray200}" />
     </Style>
 
     <Style TargetType="NavigationPage">
@@ -181,8 +150,6 @@
     <Style TargetType="TabbedPage">
         <Setter Property="BarBackgroundColor" Value="{StaticResource BodyBackground}" />
         <Setter Property="BarTextColor" Value="{StaticResource LinkNormal}" />
-        <Setter Property="UnselectedTabColor" Value="{StaticResource Gray200}" />
-        <Setter Property="SelectedTabColor" Value="{StaticResource Gray950}" />
     </Style>
 
 </ResourceDictionary>
