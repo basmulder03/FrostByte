@@ -68,4 +68,9 @@
     <MauiPlatformSpecificFolder Remove="Platforms\Tizen\"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FrostByte.Application\FrostByte.Application.csproj"/>
+    <ProjectReference Include="..\FrostByte.Presentation\FrostByte.Presentation.csproj"/>
+  </ItemGroup>
+
 </Project>

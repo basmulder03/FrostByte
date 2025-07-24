@@ -1,6 +1,6 @@
 ﻿namespace FrostByte.App;
 
-public partial class App : Application
+public partial class App : Microsoft.Maui.Controls.Application
 {
     protected override Window CreateWindow(IActivationState? activationState)
     {
