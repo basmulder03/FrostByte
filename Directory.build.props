@@ -1,8 +1,5 @@
 <Project>
   <PropertyGroup>
-    <!-- Use latest C# preview features -->
-    <LangVersion>14.0</LangVersion>
-
     <!-- Enable nullable reference types -->
     <Nullable>enable</Nullable>
 
