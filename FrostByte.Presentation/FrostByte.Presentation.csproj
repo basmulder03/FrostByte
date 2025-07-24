@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui.Markup" Version="6.0.1" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="CommunityToolkit.Maui.Markup" Version="6.0.1"/>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
   </ItemGroup>
 
 </Project>
