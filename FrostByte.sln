@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution items", "{2441760D-AD21-4B7E-83C2-4D51E61D6B47}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		.editorconfig = .editorconfig
+		Directory.build.props = Directory.build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrostByte.App", "FrostByte.App\FrostByte.App.csproj", "{34880688-963E-4E0E-95C4-21B37E3AE644}"

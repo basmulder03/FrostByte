@@ -1,0 +1,37 @@
+# top-most EditorConfig file
+root = true
+
+############################
+# All files
+############################
+
+# Normalize line endings
+[*.*]
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+
+############################
+# C# files
+############################
+[*.cs]
+
+# Indentation and spacing
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+# Nullability
+dotnet_style_null_propagation = true:suggestion
+
+# Naming conventions
+dotnet_naming_rule.private_fields_should_be_camel_case.severity = suggestion
+dotnet_naming_rule.private_fields_should_be_camel_case.symbols = private_fields
+dotnet_naming_rule.private_fields_should_be_camel_case.style = camel_case_style
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers = readonly
+
+dotnet_naming_style.camel_case_style.capitalization = camel_case

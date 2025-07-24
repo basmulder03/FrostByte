@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <!-- Use latest C# preview features -->
+    <LangVersion>14.0</LangVersion>
+
+    <!-- Enable nullable reference types -->
+    <Nullable>enable</Nullable>
+
+    <!-- Implicit global usings for common namespaces -->
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Treat all warnings as errors to maintain code quality -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Generate deterministic builds -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- You can add shared package versions or analyzers here -->
+  <!--
+  <ItemGroup>
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0" />
+  </ItemGroup>
+  -->
+</Project>
