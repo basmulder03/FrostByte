@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
+using FrostByte.App.Extendsions;
 using Microsoft.Extensions.Logging;
 
 namespace FrostByte.App;
@@ -15,8 +16,7 @@ public static class MauiProgram
 			.UseMauiCommunityToolkitMarkup()
 			.ConfigureFonts(fonts =>
 			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+				fonts.AddSourceCodeProFont();
 			});
 
 #if DEBUG
