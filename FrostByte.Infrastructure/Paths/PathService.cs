@@ -32,7 +32,7 @@ public class PathService(WorkbenchSettings settings) : IPathService
         }
     }
 
-    public string PuzzleYearFolder(int year)
+    public string GetPuzzleYearFolder(int year)
     {
         var folder = Path.Combine(PuzzleCacheRoot, year.ToString());
         if (!Directory.Exists(folder))

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FrostByte.Application.Models;
 using FrostByte.Application.Services;
 using Microsoft.Extensions.Logging;
 
@@ -25,10 +26,17 @@ public partial class DayVm(IDayService dayService, ILogger<DayVm> logger) : Obse
         set => SetProperty(ref _day, value);
     }
 
+    private PuzzleDto? _puzzle;
+    public PuzzleDto? Puzzle
+    {
+        get => _puzzle;
+        set => SetProperty(ref _puzzle, value);
+    }
+
     [RelayCommand]
     private async Task LoadAsync()
     {
         _logger.LogInformation("Loading puzzle for year {Year}, day {Day}", Year, Day);
-        await dayService.GetPuzzleAsync(Year, Day);
+        Puzzle = await dayService.GetPuzzleAsync(Year, Day);
     }
 }

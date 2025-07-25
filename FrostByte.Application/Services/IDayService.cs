@@ -1,6 +1,8 @@
-﻿namespace FrostByte.Application.Services;
+﻿using FrostByte.Application.Models;
+
+namespace FrostByte.Application.Services;
 
 public interface IDayService
 {
-    Task GetPuzzleAsync(int year, int day);
+    Task<PuzzleDto> GetPuzzleAsync(int year, int day, bool forceRefresh = false);
 }

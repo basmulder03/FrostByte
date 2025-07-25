@@ -15,5 +15,5 @@ public interface IPathService
     /// <summary>
     /// Folder under puzzle root cache for a specific year.
     /// </summary>
-    public string PuzzleYearFolder(int year);
+    public string GetPuzzleYearFolder(int year);
 }

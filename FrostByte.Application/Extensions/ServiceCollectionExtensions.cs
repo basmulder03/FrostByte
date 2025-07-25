@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISettingsService, SettingService>()
             .AddSingleton<ICalendarService, CalendarService>()
             .AddSingleton<IAuthService, AuthService>()
+            .AddSingleton<IDayService, DayService>()
 
             // Add TimeProvider
             .AddSingleton(TimeProvider.System)
