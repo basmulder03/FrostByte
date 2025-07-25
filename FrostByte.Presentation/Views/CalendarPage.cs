@@ -5,7 +5,7 @@ using Microsoft.Maui.Controls;
 
 namespace FrostByte.Presentation.Views;
 
-public class CalendarPage : ContentPage
+public partial class CalendarPage : ContentPage
 {
     public CalendarPage(CalendarVm vm)
     {

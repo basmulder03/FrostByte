@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using FrostByte.Application.Services;
-using Microsoft.Maui.Controls;
+﻿using FrostByte.Application.Services;
 using Grid = Microsoft.Maui.Controls.Grid;
 
 #if WINDOWS
@@ -36,9 +33,16 @@ public partial class AuthPage : ContentPage
 
     private async void OnHandlerChanged(object? sender, EventArgs e)
     {
-        if (DeviceInfo.Platform == DevicePlatform.WinUI && _webView.Handler?.PlatformView is WebView2 wv2)
+        try
         {
-            await InitializeWebView2Async(wv2);
+            if (DeviceInfo.Platform == DevicePlatform.WinUI && _webView.Handler?.PlatformView is WebView2 wv2)
+            {
+                await InitializeWebView2Async(wv2);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
         }
     }
 
@@ -50,22 +54,29 @@ public partial class AuthPage : ContentPage
 
     private async void OnNavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
     {
-        // When AoC redirects to "/{year}" after login
-        if (!sender.Source.StartsWith("https://adventofcode.com/") ||
-            sender.Source == "https://adventofcode.com/auth/login") return;
-        var cookies = await sender.CookieManager.GetCookiesAsync("https://adventofcode.com");
-        var session = cookies.FirstOrDefault(c => c.Name == "session");
-        if (session is null) return;
-        DateTimeOffset? expires = null;
         try
         {
-            expires = DateTimeOffset.FromUnixTimeSeconds((long)session.Expires);
-        }
-        catch
-        { /* ignore invalid expires */
-        }
+            // When AoC redirects to "/{year}" after login
+            if (!sender.Source.StartsWith("https://adventofcode.com/") ||
+                sender.Source == "https://adventofcode.com/auth/login") return;
+            var cookies = await sender.CookieManager.GetCookiesAsync("https://adventofcode.com");
+            var session = cookies.FirstOrDefault(c => c.Name == "session");
+            if (session is null) return;
+            DateTimeOffset? expires = null;
+            try
+            {
+                expires = DateTimeOffset.FromUnixTimeSeconds((long)session.Expires);
+            }
+            catch
+            { /* ignore invalid expires */
+            }
 
-        await _auth.StoreSessionCookieAsync(session.Value, expires);
-        await Shell.Current.Navigation.PopModalAsync();
+            await _auth.StoreSessionCookieAsync(session.Value, expires);
+            await Shell.Current.Navigation.PopModalAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 }
