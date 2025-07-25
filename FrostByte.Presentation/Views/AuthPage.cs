@@ -83,7 +83,20 @@ public partial class AuthPage : ContentPage
             _logger.LogInformation("Session cookie found. Storing session cookie with expiration: {Expires}", expires);
             await _auth.StoreSessionCookieAsync(session.Value, expires);
             _logger.LogInformation("Session cookie stored successfully. Navigating back to main page.");
-            await Shell.Current.Navigation.PopModalAsync();
+            MainThread.BeginInvokeOnMainThread(async void () =>
+            {
+                try
+                {
+                    _logger.LogInformation("Closing authentication page and returning to main page.");
+                    await Navigation.PopModalAsync();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Error navigating back to main page: {Message}", e.Message);
+                    // Optionally, you can show an error message to the user
+                    await DisplayAlert("Error", "An error occurred while navigating back. Please try again.", "OK");
+                }
+            });
         }
         catch (Exception ex)
         {
