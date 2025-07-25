@@ -8,10 +8,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddFrostByteApplication(this IServiceCollection services)
     {
-        return services
+        services
             // Services
             .AddSingleton<ISettingsService, SettingService>()
             .AddSingleton<ICalendarService, CalendarService>()
+            .AddSingleton<IAuthService, AuthService>()
 
             // Add TimeProvider
             .AddSingleton(TimeProvider.System)
@@ -27,5 +28,17 @@ public static class ServiceCollectionExtensions
                     .GetAwaiter()
                     .GetResult();
             });
+
+        // AoC HTTP Client with dynamic cookie injection
+        const string baseUrl = "https://adventofcode.com/";
+        services.AddTransient<SessionCookieHandler>()
+            .AddHttpClient("AoC", c =>
+            {
+                c.BaseAddress = new Uri(baseUrl);
+                c.DefaultRequestHeaders.Add("User-Agent", "FrostByte/1.0");
+            })
+            .AddHttpMessageHandler<SessionCookieHandler>();
+
+        return services;
     }
 }

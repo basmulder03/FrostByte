@@ -32,6 +32,10 @@ public static class MauiProgram
         // App
         builder.Services.AddSingleton<AppShell>();
 
+#if WINDOWS
+        builder.Services.AddSingleton<ISecretStore, WindowsSecretStore>();
+#endif
+
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

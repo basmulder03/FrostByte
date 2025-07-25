@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
         return services
                 // Pages
                 .AddTransient<CalendarPage>()
+                .AddTransient<AuthPage>()
 
                 // ViewModels
                 .AddTransient<CalendarVm>()

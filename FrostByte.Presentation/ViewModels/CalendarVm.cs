@@ -20,9 +20,29 @@ public partial class CalendarVm : ObservableObject
         RefreshCalendar();
     }
 
-    [ObservableProperty] private int _year;
-    [ObservableProperty] private bool _hasPreviousYear;
-    [ObservableProperty] private bool _hasNextYear;
+    public int Year
+    {
+        get => _year;
+        set => SetProperty(ref _year, value);
+    }
+
+    private int _year;
+
+    public bool HasPreviousYear
+    {
+        get => _hasPreviousYear;
+        set => SetProperty(ref _hasPreviousYear, value);
+    }
+
+    private bool _hasPreviousYear;
+
+    public bool HasNextYear
+    {
+        get => _hasNextYear;
+        set => SetProperty(ref _hasNextYear, value);
+    }
+
+    private bool _hasNextYear;
 
     public ObservableCollection<DayCell> DayCells { get; }
 
