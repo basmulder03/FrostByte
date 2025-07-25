@@ -7,27 +7,33 @@ public partial class AppShell : Shell
 {
     private readonly IAuthService _authService;
 
-    public AppShell(CalendarPage calendarPage, AuthPage authPage, IAuthService authService)
+    public AppShell(Func<CalendarPage> calendarPageFactory, Func<DayPage> dayPageFactory, Func<AuthPage> authPageFactory, IAuthService authService)
     {
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
 
-        var calendarPageShell = new ShellContent
-        {
-            ContentTemplate = new DataTemplate(() => calendarPage),
-            Route = "CalendarPage"
-        };
-        SetNavBarIsVisible(calendarPageShell, false);
-        Items.Add(calendarPageShell);
+        AddPageToShell(calendarPageFactory, "CalendarPage", false);
+        AddPageToShell(dayPageFactory, "DayPage", false);
 
-        _ = EnsureSignedInAsync(authPage);
+        _ = EnsureSignedInAsync(authPageFactory);
     }
 
-    private async Task EnsureSignedInAsync(AuthPage authPage)
+    private void AddPageToShell(Func<Page> pageFactory, string route, bool navBarVisible)
+    {
+        var shellContent = new ShellContent
+        {
+            ContentTemplate = new DataTemplate(pageFactory),
+            Route = route
+        };
+        SetNavBarIsVisible(shellContent, navBarVisible);
+        Items.Add(shellContent);
+    }
+
+    private async Task EnsureSignedInAsync(Func<AuthPage> authPageFactory)
     {
         if (!await _authService.IsAuthenticatedAsync())
         {
             // present AuthPage modally
-            await Navigation.PushModalAsync(authPage);
+            await Navigation.PushModalAsync(authPageFactory());
         }
     }
 }

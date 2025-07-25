@@ -11,9 +11,14 @@ public static class ServiceCollectionExtensions
                 // Pages
                 .AddTransient<CalendarPage>()
                 .AddTransient<AuthPage>()
-
+                .AddTransient<DayPage>()
+                // Page Factories
+                .AddTransient<Func<CalendarPage>>(sp => sp.GetRequiredService<CalendarPage>)
+                .AddTransient<Func<AuthPage>>(sp => sp.GetRequiredService<AuthPage>)
+                .AddTransient<Func<DayPage>>(sp => sp.GetRequiredService<DayPage>)
                 // ViewModels
                 .AddTransient<CalendarVm>()
+                .AddTransient<DayVm>()
             ;
     }
 }

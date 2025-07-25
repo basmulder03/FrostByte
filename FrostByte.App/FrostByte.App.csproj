@@ -74,6 +74,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FrostByte.Application\FrostByte.Application.csproj"/>
+    <ProjectReference Include="..\FrostByte.Infrastructure\FrostByte.Infrastructure.csproj" />
     <ProjectReference Include="..\FrostByte.Presentation\FrostByte.Presentation.csproj"/>
   </ItemGroup>
 

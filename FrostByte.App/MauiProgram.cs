@@ -5,6 +5,7 @@ using FrostByte.App.Extensions;
 using FrostByte.Application.Configuration;
 using FrostByte.Application.Extensions;
 using FrostByte.Application.Services;
+using FrostByte.Infrastructure.Extensions;
 using FrostByte.Presentation.Extensions;
 using FrostByte.Presentation.ViewModels;
 using FrostByte.Presentation.Views;
@@ -26,6 +27,9 @@ public static class MauiProgram
 
         // Core Services
         builder.Services.AddFrostByteApplication();
+
+        // Infrastructure
+        builder.Services.AddFrostByteInfrastructure();
 
         // Presentation
         builder.Services.AddFrostBytePresentation();
