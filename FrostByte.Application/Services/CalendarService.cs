@@ -8,9 +8,9 @@ public class CalendarService : ICalendarService
     private readonly WorkbenchSettings _settings;
     private readonly TimeProvider _timeProvider;
 
-    public CalendarService(IOptions<WorkbenchSettings> settings, TimeProvider timeProvider)
+    public CalendarService(WorkbenchSettings workbenchSettings, TimeProvider timeProvider)
     {
-        _settings = settings.Value;
+        _settings = workbenchSettings;
         _timeProvider = timeProvider;
     }
 

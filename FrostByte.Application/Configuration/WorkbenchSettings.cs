@@ -1,4 +1,6 @@
-﻿namespace FrostByte.Application.Configuration;
+﻿using Microsoft.VisualBasic;
+
+namespace FrostByte.Application.Configuration;
 
 public class WorkbenchSettings
 {

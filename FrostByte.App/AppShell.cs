@@ -1,15 +1,17 @@
-﻿namespace FrostByte.App;
+﻿using FrostByte.Presentation.Views;
+
+namespace FrostByte.App;
 
 public partial class AppShell : Shell
 {
-    public AppShell()
+    public AppShell(CalendarPage calendarPage)
     {
-        var shellContent = new ShellContent
+        var calendarPageShell = new ShellContent
         {
-            ContentTemplate = new DataTemplate(() => new MainPage()),
-            Route = "MainPage"
+            ContentTemplate = new DataTemplate(() => calendarPage),
+            Route = "CalendarPage"
         };
-        SetNavBarIsVisible(shellContent, false);
-        Items.Add(shellContent);
+        SetNavBarIsVisible(calendarPageShell, false);
+        Items.Add(calendarPageShell);
     }
 }

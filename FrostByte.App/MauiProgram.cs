@@ -2,7 +2,9 @@
 using CommunityToolkit.Maui.Markup;
 using FrostByte.App.Extendsions;
 using FrostByte.Application.Configuration;
+using FrostByte.Application.Extensions;
 using FrostByte.Application.Services;
+using FrostByte.Presentation.Extensions;
 using FrostByte.Presentation.ViewModels;
 using FrostByte.Presentation.Views;
 using Microsoft.Extensions.Configuration;
@@ -21,18 +23,14 @@ public static class MauiProgram
             .UseMauiCommunityToolkitMarkup()
             .ConfigureFonts(fonts => { fonts.AddSourceCodeProFont(); });
 
-        // Load settings from the appdata settings.json file
-        IConfiguration config = new ConfigurationBuilder().Build();
-
-        // Application Settings
-        builder.Services.Configure<WorkbenchSettings>(config);
-
         // Core Services
-        builder.Services.AddSingleton<ICalendarService, CalendarService>();
+        builder.Services.AddFrostByteApplication();
 
         // Presentation
-        builder.Services.AddTransient<CalendarVm>();
-        builder.Services.AddTransient<CalendarPage>();
+        builder.Services.AddFrostBytePresentation();
+
+        // App
+        builder.Services.AddSingleton<AppShell>();
 
 #if DEBUG
         builder.Logging.AddDebug();
