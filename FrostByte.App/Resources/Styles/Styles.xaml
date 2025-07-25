@@ -152,11 +152,6 @@
         <Setter Property="BarTextColor" Value="{StaticResource LinkNormal}" />
     </Style>
 
-    <Style TargetType="ContentPage">
-        <Setter Property="BackgroundColor" Value="{StaticResource BodyBackground}" />
-        <Setter Property="FontFamily" Value="SourceCodeProRegular" />
-    </Style>
-
     <Style TargetType="Label">
         <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
         <Setter Property="FontFamily" Value="SourceCodeProRegular" />
