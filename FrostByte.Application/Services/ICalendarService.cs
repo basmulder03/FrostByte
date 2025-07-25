@@ -16,4 +16,9 @@ public interface ICalendarService
     /// True if puzzle for [year, day] is unlocked, false otherwise.
     /// </summary>
     bool IsUnlocked(int year, int day);
+
+    /// <summary>
+    /// True if a calendar should be shown for the specified year, false otherwise.
+    /// </summary>
+    bool YearAvailable(int year);
 }

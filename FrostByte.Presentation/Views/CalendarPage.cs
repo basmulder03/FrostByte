@@ -18,7 +18,10 @@ public class CalendarPage : ContentPage
             Spacing = 20,
             Children =
             {
-                new Button().Text("<").Bind(Button.CommandProperty, nameof(vm.PrevYearCommand)),
+                new Button()
+                    .Text("<")
+                    .Bind(Button.CommandProperty, nameof(vm.PrevYearCommand))
+                    .Bind(IsEnabledProperty, nameof(vm.HasPreviousYear)),
                 new Label()
                     .Bind(Label.TextProperty, nameof(vm.Year))
                     .FontSize(24)
@@ -26,21 +29,20 @@ public class CalendarPage : ContentPage
                 new Button()
                     .Text(">")
                     .Bind(Button.CommandProperty, nameof(vm.NextYearCommand))
+                    .Bind(IsEnabledProperty, nameof(vm.HasNextYear))
             }
         };
 
         // 5×5 grid
         var grid = new Grid
         {
-            RowDefinitions =
-                new RowDefinitionCollection(Enumerable.Range(0, 5).Select(_ => new RowDefinition(GridLength.Star))
-                    .ToArray()),
-            ColumnDefinitions = new ColumnDefinitionCollection(Enumerable.Range(0, 5)
-                .Select(_ => new ColumnDefinition(GridLength.Star)).ToArray()),
+            RowDefinitions = Rows.Define(5, GridLength.Auto),
+            ColumnDefinitions = Columns.Define(5, GridLength.Auto),
             Margin = 10,
             HorizontalOptions = LayoutOptions.Fill,
             VerticalOptions = LayoutOptions.Fill
         };
+
 
         // Populate grid with day cells
         vm.DayCells.CollectionChanged += (_, _) => PopulateGrid(grid, vm);
@@ -54,7 +56,7 @@ public class CalendarPage : ContentPage
         };
     }
 
-    private void PopulateGrid(Grid grid, CalendarVm vm)
+    private static void PopulateGrid(Grid grid, CalendarVm vm)
     {
         grid.Children.Clear();
         for (var i = 0; i < vm.DayCells.Count; i++)

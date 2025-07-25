@@ -34,4 +34,10 @@ public class CalendarService : ICalendarService
 
         return _timeProvider.GetUtcNow() >= openUtc;
     }
+
+    public bool YearAvailable(int year)
+    {
+        return year >= _settings.FirstPuzzleYear
+               && year <= _timeProvider.GetUtcNow().Year;
+    }
 }
