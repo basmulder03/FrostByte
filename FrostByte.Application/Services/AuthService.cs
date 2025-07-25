@@ -43,9 +43,4 @@ public class AuthService : IAuthService
     {
         return _secretStore.RemoveAsync(CookieKey);
     }
-
-    internal Task StoreSessionAsync(string cookie, DateTimeOffset? expires = null)
-    {
-        return _secretStore.SetAsync(CookieKey, cookie, expires);
-    }
 }

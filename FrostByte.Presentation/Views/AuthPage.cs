@@ -11,7 +11,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace FrostByte.Presentation.Views;
 
-public class AuthPage : ContentPage
+public partial class AuthPage : ContentPage
 {
     private readonly IAuthService _auth;
     private readonly WebView _webView;
@@ -23,7 +23,7 @@ public class AuthPage : ContentPage
 
         _webView = new WebView
         {
-            Source = "https://adventofcode.com/auth/signin",
+            Source = "https://adventofcode.com/auth/login",
             VerticalOptions = LayoutOptions.Fill,
             HorizontalOptions = LayoutOptions.Fill
         };
@@ -34,46 +34,38 @@ public class AuthPage : ContentPage
         Content = new Grid { Children = { _webView } };
     }
 
-    private void OnHandlerChanged(object? sender, EventArgs e)
+    private async void OnHandlerChanged(object? sender, EventArgs e)
     {
-#if WINDOWS
-        if (_webView.Handler?.PlatformView is WebView2 wv2)
+        if (DeviceInfo.Platform == DevicePlatform.WinUI && _webView.Handler?.PlatformView is WebView2 wv2)
         {
-            InitializeWebView2(wv2);
+            await InitializeWebView2Async(wv2);
         }
-#endif
     }
 
-#if WINDOWS
-    private void InitializeWebView2(WebView2 wv2)
+    private async Task InitializeWebView2Async(WebView2 wv2)
     {
-        wv2.EnsureCoreWebView2Async()
-            .GetAwaiter().GetResult();
-
+        await wv2.EnsureCoreWebView2Async();
         wv2.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
     }
 
-    private void OnNavigationCompleted(
-        CoreWebView2 sender,
-        CoreWebView2NavigationCompletedEventArgs args)
+    private async void OnNavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
     {
-        var uri = sender.Source;
-        // ignore the sign-in form itself
-        if (uri.EndsWith("/auth/signin", StringComparison.OrdinalIgnoreCase))
-            return;
-
-        // must be AoC domain
-        if (!uri.StartsWith("https://adventofcode.com/", StringComparison.OrdinalIgnoreCase))
-            return;
-
-        var cookies = sender.CookieManager.GetCookiesAsync("https://adventofcode.com").GetAwaiter().GetResult();
+        // When AoC redirects to "/{year}" after login
+        if (!sender.Source.StartsWith("https://adventofcode.com/") ||
+            sender.Source == "https://adventofcode.com/auth/login") return;
+        var cookies = await sender.CookieManager.GetCookiesAsync("https://adventofcode.com");
         var session = cookies.FirstOrDefault(c => c.Name == "session");
-        if (session == null) return;
+        if (session is null) return;
+        DateTimeOffset? expires = null;
+        try
+        {
+            expires = DateTimeOffset.FromUnixTimeSeconds((long)session.Expires);
+        }
+        catch
+        { /* ignore invalid expires */
+        }
 
-        DateTimeOffset? expires = DateTimeOffset.FromUnixTimeSeconds((long)session.Expires);
-
-        _auth.StoreSessionCookieAsync(session.Value, expires).GetAwaiter().GetResult();
-        Shell.Current.Navigation.PopModalAsync().GetAwaiter().GetResult();
+        await _auth.StoreSessionCookieAsync(session.Value, expires);
+        await Shell.Current.Navigation.PopModalAsync();
     }
-#endif
 }
