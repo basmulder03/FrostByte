@@ -1,4 +1,5 @@
 ﻿using FrostByte.Application.Services;
+using Microsoft.Extensions.Logging;
 using Grid = Microsoft.Maui.Controls.Grid;
 
 #if WINDOWS
@@ -12,10 +13,12 @@ public partial class AuthPage : ContentPage
 {
     private readonly IAuthService _auth;
     private readonly WebView _webView;
+    private readonly ILogger<AuthPage> _logger;
 
-    public AuthPage(IAuthService auth)
+    public AuthPage(IAuthService auth, ILogger<AuthPage> logger)
     {
         _auth = auth ?? throw new ArgumentNullException(nameof(auth));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         Title = "Sign in to Advent of Code";
 
         _webView = new WebView
@@ -33,27 +36,33 @@ public partial class AuthPage : ContentPage
 
     private async void OnHandlerChanged(object? sender, EventArgs e)
     {
+        _logger.LogDebug("WebView handler changed, initializing WebView2 if applicable.");
         try
         {
             if (DeviceInfo.Platform == DevicePlatform.WinUI && _webView.Handler?.PlatformView is WebView2 wv2)
             {
+                _logger.LogDebug("WebView2 platform view detected, initializing WebView2.");
                 await InitializeWebView2Async(wv2);
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.LogError(ex, "Failed to initialize WebView2: {Message}", ex.Message);
+            // Optionally, you can show an error message to the user
+            await DisplayAlert("Error", "Failed to initialize the authentication page. Please try again later.", "OK");
         }
     }
 
     private async Task InitializeWebView2Async(WebView2 wv2)
     {
+        _logger.LogDebug("Ensuring WebView2 core is initialized.");
         await wv2.EnsureCoreWebView2Async();
         wv2.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
     }
 
     private async void OnNavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
     {
+        _logger.LogDebug("Navigation completed with URL: {Url}, Success: {Success}", sender.Source, args.IsSuccess);
         try
         {
             // When AoC redirects to "/{year}" after login
@@ -71,12 +80,16 @@ public partial class AuthPage : ContentPage
             { /* ignore invalid expires */
             }
 
+            _logger.LogInformation("Session cookie found. Storing session cookie with expiration: {Expires}", expires);
             await _auth.StoreSessionCookieAsync(session.Value, expires);
+            _logger.LogInformation("Session cookie stored successfully. Navigating back to main page.");
             await Shell.Current.Navigation.PopModalAsync();
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.LogError(ex, "Error processing navigation completion: {Message}", ex.Message);
+            // Optionally, you can show an error message to the user
+            await DisplayAlert("Error", "An error occurred while processing the authentication. Please try again.", "OK");
         }
     }
 }

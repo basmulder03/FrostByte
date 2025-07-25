@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FrostByte.Application.Configuration;
 using FrostByte.Application.Services;
+using Microsoft.Extensions.Logging;
 
 namespace FrostByte.Presentation.ViewModels;
 
@@ -11,13 +12,16 @@ public record DayCell(int Day, bool IsUnlocked);
 public partial class CalendarVm : ObservableObject
 {
     private readonly ICalendarService _calendarService;
+    private readonly ILogger<CalendarVm> _logger;
 
-    public CalendarVm(ICalendarService calendarService, TimeProvider timeProvider)
+    public CalendarVm(ICalendarService calendarService, TimeProvider timeProvider, ILogger<CalendarVm> logger)
     {
         _calendarService = calendarService;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _year = timeProvider.GetUtcNow().Year;
         DayCells = [];
         RefreshCalendar();
+        _logger.LogInformation("CalendarVm initialized for year {Year}", _year);
     }
 
     public int Year
@@ -49,6 +53,7 @@ public partial class CalendarVm : ObservableObject
     [RelayCommand]
     private void PrevYear()
     {
+        _logger.LogDebug("Moving to previous year: {Year}", Year - 1);
         if (!HasPreviousYear) return;
         Year--;
         RefreshCalendar();
@@ -57,6 +62,7 @@ public partial class CalendarVm : ObservableObject
     [RelayCommand]
     private void NextYear()
     {
+        _logger.LogDebug("Moving to next year: {Year}", Year + 1);
         if (!HasNextYear) return;
         Year++;
         RefreshCalendar();
@@ -65,6 +71,7 @@ public partial class CalendarVm : ObservableObject
     [RelayCommand]
     private async Task OpenDayAsync(int day)
     {
+        _logger.LogDebug("Opening day {Day} for year {Year}", day, Year);
         // Navigate to DayPage (ensure it accepts both year & day as parameters)
         await Shell.Current.GoToAsync(nameof(CalendarVm).Replace("Vm", "Page"),
             new Dictionary<string, object> { { "year", Year }, { "day", day } });
@@ -72,6 +79,7 @@ public partial class CalendarVm : ObservableObject
 
     private void RefreshCalendar()
     {
+        _logger.LogDebug("Refreshing calendar for year {Year}", Year);
         DayCells.Clear();
         foreach (var day in _calendarService.GetDays(Year))
         {
@@ -81,5 +89,6 @@ public partial class CalendarVm : ObservableObject
 
         HasPreviousYear = _calendarService.YearAvailable(Year - 1);
         HasNextYear = _calendarService.YearAvailable(Year + 1);
+        _logger.LogInformation("Calendar refreshed for year {Year} with {DayCount} days", Year, DayCells.Count);
     }
 }

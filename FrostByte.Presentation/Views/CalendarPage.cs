@@ -1,5 +1,6 @@
 ﻿using FrostByte.Presentation.ViewModels;
 using CommunityToolkit.Maui.Markup;
+using Microsoft.Extensions.Logging;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 using Microsoft.Maui.Controls;
 
@@ -7,8 +8,11 @@ namespace FrostByte.Presentation.Views;
 
 public partial class CalendarPage : ContentPage
 {
-    public CalendarPage(CalendarVm vm)
+    private readonly ILogger<CalendarPage> _logger;
+
+    public CalendarPage(CalendarVm vm, ILogger<CalendarPage> logger)
     {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         BindingContext = vm;
 
         // Header: < 2025 >
@@ -81,8 +85,9 @@ public partial class CalendarPage : ContentPage
         };
     }
 
-    private static void PopulateGrid(Grid grid, CalendarVm vm)
+    private void PopulateGrid(Grid grid, CalendarVm vm)
     {
+        _logger.LogDebug("Populating calendar grid for year {Year} with {Count} days", vm.Year, vm.DayCells.Count);
         grid.Children.Clear();
         const int gridSize = 5;
         for (var i = 0; i < vm.DayCells.Count; i++)
