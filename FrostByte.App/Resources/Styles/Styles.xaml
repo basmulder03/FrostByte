@@ -110,7 +110,7 @@
         <Setter Property="BackgroundColor"
                 Value="{AppThemeBinding Light={StaticResource LinkNormal},
                                       Dark={StaticResource LinkHover}}" />
-        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontFamily" Value="SourceCodePro" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="BorderWidth" Value="0" />
         <Setter Property="CornerRadius" Value="8" />
@@ -150,6 +150,16 @@
     <Style TargetType="TabbedPage">
         <Setter Property="BarBackgroundColor" Value="{StaticResource BodyBackground}" />
         <Setter Property="BarTextColor" Value="{StaticResource LinkNormal}" />
+    </Style>
+
+    <Style TargetType="ContentPage">
+        <Setter Property="BackgroundColor" Value="{StaticResource BodyBackground}" />
+        <Setter Property="FontFamily" Value="SourceCodeProRegular" />
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+        <Setter Property="FontFamily" Value="SourceCodeProRegular" />
     </Style>
 
 </ResourceDictionary>
