@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using FrostByte.App.Extendsions;
+using FrostByte.App.Extensions;
 using FrostByte.Application.Configuration;
 using FrostByte.Application.Extensions;
 using FrostByte.Application.Services;
@@ -39,6 +40,7 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+        builder.Logging.AddLogging();
 
         return builder.Build();
     }
