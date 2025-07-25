@@ -29,13 +29,14 @@ public static class ServiceCollectionExtensions
                     .GetResult();
             });
 
-        // AoC HTTP Client with dynamic cookie injection
+        // AoC HTTP Client with dynamic cookie injection and compliance with AoC automation rules
         const string baseUrl = "https://adventofcode.com/";
+        const string userAgent = "github.com/basmulder03/FrostByte by bas@basmulder.online";
         services.AddTransient<SessionCookieHandler>()
             .AddHttpClient("AoC", c =>
             {
                 c.BaseAddress = new Uri(baseUrl);
-                c.DefaultRequestHeaders.Add("User-Agent", "FrostByte/1.0");
+                c.DefaultRequestHeaders.Add("User-Agent", userAgent);
             })
             .AddHttpMessageHandler<SessionCookieHandler>();
 
