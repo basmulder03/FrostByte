@@ -50,117 +50,21 @@ public partial class PuzzleView : ContentView
     {
         _stack.Children.Clear();
 
-        // Title
-        _stack.Add(new Label
+        // Add title
+        var titleView = new PuzzleTitleView
         {
-            Text = dto.Title,
-            FontSize = 28,
-            FontAttributes = FontAttributes.Bold
-        });
+            Title = dto.Title
+        };
+        _stack.Add(titleView);
 
-        // Parts (usually 1 & 2)
+        // Add parts
         foreach (var part in dto.Parts)
         {
-            _stack.Add(new Label
+            var partView = new PuzzlePartView
             {
-                Text = $"Part {part.PartNumber}",
-                FontSize = 20,
-                FontAttributes = FontAttributes.Bold
-            });
-
-            foreach (var block in part.Blocks)
-                switch (block)
-                {
-                    case ParagraphBlock paragraph:
-                        var paragraphLabel = new Label
-                        {
-                            FontSize = 16,
-                            LineBreakMode = LineBreakMode.WordWrap
-                        };
-
-                        var formattedString = new FormattedString();
-                        for (var i = 0; i < paragraph.Text.Count; i++)
-                        {
-                            var text = paragraph.Text[i];
-                            var span = text switch
-                            {
-                                PlainText plain => new Span { Text = plain.Plain },
-                                EmphasizedText emphasized => new Span
-                                {
-                                    Text = emphasized.Emphasized,
-                                    FontAttributes = FontAttributes.Italic
-                                },
-                                StarEmphasizedText starEmphasized => new Span
-                                {
-                                    Text = starEmphasized.StarEmphasized,
-                                    FontAttributes = FontAttributes.Italic,
-                                    TextColor = Colors.Gold
-                                },
-                                CodeText code => new Span
-                                {
-                                    Text = $"\u200A{code.Code}\u200A", // Add thin spaces for padding
-                                    FontFamily = "SourceCodeProRegular",
-                                    BackgroundColor = Colors.LightGray,
-                                    TextColor = Colors.DarkSlateGray
-                                    // No border support in Span, but this matches code block style
-                                },
-                                EmphasizedCodeText emphasizedCode => new Span
-                                {
-                                    Text = $"\u200A{emphasizedCode.EmphasizedCode}\u200A",
-                                    FontFamily = "SourceCodeProRegular",
-                                    FontAttributes = FontAttributes.Italic,
-                                    BackgroundColor = Colors.LightGray,
-                                    TextColor = Colors.DarkSlateGray
-                                },
-                                TitleText titleText => new Span
-                                {
-                                    Text = titleText.Text,
-                                    TextDecorations = TextDecorations.Underline
-                                },
-                                LinkText linkText => new Span
-                                {
-                                    Text = linkText.Text,
-                                    TextDecorations = TextDecorations.Underline,
-                                    GestureRecognizers =
-                                    {
-                                        new TapGestureRecognizer
-                                        {
-                                            Command = new Command(() =>
-                                            {
-                                                // For simplicity, we just log the link.
-                                                _logger.LogInformation("Link tapped: {Url}", linkText.Url);
-                                            })
-                                        }
-                                    },
-                                    TextColor = Colors.Blue
-                                },
-                                _ => new Span { Text = "" }
-                            };
-                            formattedString.Spans.Add(span);
-                            // Add a space between spans, except after the last one
-                            if (i < paragraph.Text.Count - 1)
-                                formattedString.Spans.Add(new Span { Text = " " });
-                        }
-
-                        paragraphLabel.FormattedText = formattedString;
-                        _stack.Add(paragraphLabel);
-                        break;
-                    case CodeBlock codeBlock:
-                        _stack.Add(new Border
-                        {
-                            HorizontalOptions = LayoutOptions.Start,
-                            Stroke = Colors.Gray,
-                            StrokeThickness = 1,
-                            Padding = 8,
-                            Content = new Label
-                            {
-                                Text = codeBlock.Code,
-                                FontFamily = "SourceCodeProRegular",
-                                FontSize = 14
-                            }
-                        });
-                        break;
-                }
+                Part = part
+            };
+            _stack.Add(partView);
         }
     }
 }

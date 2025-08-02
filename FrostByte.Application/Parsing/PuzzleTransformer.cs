@@ -60,7 +60,7 @@ public class PuzzleTransformer(ILogger<PuzzleTransformer> logger) : IPuzzleTrans
         return blocks;
     }
 
-    private List<Text> ParseInlineText(IElement element)
+    private IList<Text> ParseInlineText(IElement element)
     {
         _logger.LogDebug("Parsing inline text for element: {TagName}", element.TagName);
         var texts = new List<Text>();

@@ -7,8 +7,8 @@ namespace FrostByte.Application.Models;
 [JsonDerivedType(typeof(ListBlock), "List")]
 public abstract record Block;
 
-public sealed record ParagraphBlock(IReadOnlyList<Text> Text) : Block;
+public sealed record ParagraphBlock(IList<Text> Text) : Block;
 
 public sealed record CodeBlock(string Code) : Block;
 
-public sealed record ListBlock(IReadOnlyList<IReadOnlyList<Text>> Items) : Block;
+public sealed record ListBlock(IList<IList<Text>> Items) : Block;
