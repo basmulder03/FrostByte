@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using FrostByte.Application.Clients;
 using FrostByte.Application.Models;
 using FrostByte.Application.Parsing;
 using FrostByte.Infrastructure.Paths;
@@ -6,18 +7,27 @@ using Microsoft.Extensions.Logging;
 
 namespace FrostByte.Application.Services;
 
-public class DayService(IPathService pathService, IHttpClientFactory httpClientFactory, ILogger<DayService> logger)
+public class DayService(
+    IPathService pathService,
+    IAdventOfCodeHttpClient httpClient,
+    IPuzzleTransformer transformer,
+    ILogger<DayService> logger)
     : IDayService
 {
-    private readonly IPathService _pathService = pathService ?? throw new ArgumentNullException(nameof(pathService));
-    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-    private readonly ILogger<DayService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
     private static readonly JsonSerializerOptions _jsonOpts = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
+
+    private readonly IAdventOfCodeHttpClient _adventOfCodeClient =
+        httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+
+    private readonly ILogger<DayService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IPathService _pathService = pathService ?? throw new ArgumentNullException(nameof(pathService));
+
+    private readonly IPuzzleTransformer _puzzleTransformer =
+        transformer ?? throw new ArgumentNullException(nameof(transformer));
 
     public async Task<PuzzleDto> GetPuzzleAsync(int year, int day, bool forceRefresh = false)
     {
@@ -33,11 +43,13 @@ public class DayService(IPathService pathService, IHttpClientFactory httpClientF
                 _logger.LogInformation("Deleting existing puzzle JSON file at {JsonPath}", jsonFile);
                 File.Delete(jsonFile);
             }
+
             if (File.Exists(htmlFile))
             {
                 _logger.LogInformation("Deleting existing puzzle HTML file at {HtmlPath}", htmlFile);
                 File.Delete(htmlFile);
             }
+
             _logger.LogInformation("Puzzle files deleted, fetching new puzzle from server...");
         }
 
@@ -54,8 +66,7 @@ public class DayService(IPathService pathService, IHttpClientFactory httpClientF
         }
 
         _logger.LogWarning("Puzzle files not found for year {Year}, day {Day}. Fetching from server...", year, day);
-        var client = _httpClientFactory.CreateClient("AoC");
-        var resp = await client.GetStringAsync($"{year}/day/{day}");
+        var resp = await _adventOfCodeClient.GetPuzzleHtmlAsync(year, day);
         Directory.CreateDirectory(folder);
         await File.WriteAllTextAsync(htmlFile, resp);
         _logger.LogInformation("Puzzle HTML fetched and saved to {HtmlPath}", htmlFile);
@@ -64,7 +75,7 @@ public class DayService(IPathService pathService, IHttpClientFactory httpClientF
 
     private async Task<PuzzleDto> ParseHtmlToJsonAsync(int year, int day, string html)
     {
-        var dto = PuzzleTransformer.Transform(html, year, day);
+        var dto = _puzzleTransformer.Transform(html, year, day);
         var jsonFile = Path.Combine(_pathService.GetPuzzleYearFolder(year), $"day{day}.json");
         await WriteJsonFileAsync(jsonFile, dto);
         return dto;

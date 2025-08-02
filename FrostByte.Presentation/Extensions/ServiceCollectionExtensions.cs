@@ -1,4 +1,5 @@
-﻿using FrostByte.Presentation.ViewModels;
+﻿using FrostByte.Presentation.Controls;
+using FrostByte.Presentation.ViewModels;
 using FrostByte.Presentation.Views;
 
 namespace FrostByte.Presentation.Extensions;
@@ -19,6 +20,9 @@ public static class ServiceCollectionExtensions
                 // ViewModels
                 .AddTransient<CalendarVm>()
                 .AddTransient<DayVm>()
+                // Controls
+                .AddTransient<PuzzleView>()
+                .AddTransient<Func<PuzzleView>>(sp => sp.GetRequiredService<PuzzleView>)
             ;
     }
 }

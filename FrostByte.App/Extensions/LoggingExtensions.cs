@@ -8,9 +8,11 @@ public static class LoggingExtensions
 {
     public static ILoggingBuilder AddLogging(this ILoggingBuilder builder)
     {
-        var logFileLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FrostByte", "Logs");
+        var logFileLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "FrostByte", "Logs");
         Directory.CreateDirectory(logFileLocation);
-        const string logTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}";
+        const string logTemplate =
+            "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
@@ -19,11 +21,11 @@ public static class LoggingExtensions
                 outputTemplate: logTemplate
             )
             .WriteTo.Console(
-                restrictedToMinimumLevel: LogEventLevel.Information,
-                outputTemplate: logTemplate
+                LogEventLevel.Information,
+                logTemplate
             )
             .WriteTo.File(
-                path: logFileLocation,
+                logFileLocation,
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 7,
                 outputTemplate: logTemplate

@@ -1,4 +1,4 @@
-﻿namespace FrostByte.App.Extendsions;
+﻿namespace FrostByte.App.Extensions;
 
 public static class FontExtensions
 {

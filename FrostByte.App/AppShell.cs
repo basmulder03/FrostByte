@@ -7,13 +7,15 @@ public partial class AppShell : Shell
 {
     private readonly IAuthService _authService;
 
-    public AppShell(Func<CalendarPage> calendarPageFactory, Func<DayPage> dayPageFactory, Func<AuthPage> authPageFactory, IAuthService authService)
+    public AppShell(Func<CalendarPage> calendarPageFactory, Func<DayPage> dayPageFactory,
+        Func<AuthPage> authPageFactory, IAuthService authService)
     {
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
 
+        FlyoutIsPresented = false;
+        FlyoutBehavior = FlyoutBehavior.Disabled;
         AddPageToShell(calendarPageFactory, "CalendarPage", false);
         AddPageToShell(dayPageFactory, "DayPage", false);
-
         _ = EnsureSignedInAsync(authPageFactory);
     }
 
@@ -24,6 +26,7 @@ public partial class AppShell : Shell
             ContentTemplate = new DataTemplate(pageFactory),
             Route = route
         };
+        SetFlyoutItemIsVisible(shellContent, navBarVisible);
         SetNavBarIsVisible(shellContent, navBarVisible);
         Items.Add(shellContent);
     }
@@ -31,9 +34,7 @@ public partial class AppShell : Shell
     private async Task EnsureSignedInAsync(Func<AuthPage> authPageFactory)
     {
         if (!await _authService.IsAuthenticatedAsync())
-        {
             // present AuthPage modally
             await Navigation.PushModalAsync(authPageFactory());
-        }
     }
 }

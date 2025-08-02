@@ -1,4 +1,6 @@
-﻿using FrostByte.Application.Configuration;
+﻿using FrostByte.Application.Clients;
+using FrostByte.Application.Configuration;
+using FrostByte.Application.Parsing;
 using FrostByte.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +17,9 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IAuthService, AuthService>()
             .AddSingleton<IDayService, DayService>()
 
+            // Transformers
+            .AddSingleton<IPuzzleTransformer, PuzzleTransformer>()
+
             // Add TimeProvider
             .AddSingleton(TimeProvider.System)
 
@@ -30,11 +35,11 @@ public static class ServiceCollectionExtensions
                     .GetResult();
             });
 
-        // AoC HTTP Client with dynamic cookie injection and compliance with AoC automation rules
+        // Register AdventOfCodeHttpClient as a typed client
         const string baseUrl = "https://adventofcode.com/";
-        const string userAgent = "github.com/basmulder03/FrostByte by bas@basmulder.online";
+        const string userAgent = "FrostByte/1.0 (+https://github.com/basmulder03/FrostByte; bas@basmulder.online)";
         services.AddTransient<SessionCookieHandler>()
-            .AddHttpClient("AoC", c =>
+            .AddHttpClient<IAdventOfCodeHttpClient, AdventOfCodeHttpClient>(c =>
             {
                 c.BaseAddress = new Uri(baseUrl);
                 c.DefaultRequestHeaders.Add("User-Agent", userAgent);

@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FrostByte.Application.Configuration;
 using FrostByte.Application.Services;
 using Microsoft.Extensions.Logging;
 
@@ -13,6 +12,12 @@ public partial class CalendarVm : ObservableObject
 {
     private readonly ICalendarService _calendarService;
     private readonly ILogger<CalendarVm> _logger;
+
+    private bool _hasNextYear;
+
+    private bool _hasPreviousYear;
+
+    private int _year;
 
     public CalendarVm(ICalendarService calendarService, TimeProvider timeProvider, ILogger<CalendarVm> logger)
     {
@@ -30,23 +35,17 @@ public partial class CalendarVm : ObservableObject
         set => SetProperty(ref _year, value);
     }
 
-    private int _year;
-
     public bool HasPreviousYear
     {
         get => _hasPreviousYear;
         set => SetProperty(ref _hasPreviousYear, value);
     }
 
-    private bool _hasPreviousYear;
-
     public bool HasNextYear
     {
         get => _hasNextYear;
         set => SetProperty(ref _hasNextYear, value);
     }
-
-    private bool _hasNextYear;
 
     public ObservableCollection<DayCell> DayCells { get; }
 
@@ -73,8 +72,12 @@ public partial class CalendarVm : ObservableObject
     {
         _logger.LogDebug("Opening day {Day} for year {Year}", day, Year);
         // Navigate to DayPage (ensure it accepts both year & day as parameters)
-        await Shell.Current.GoToAsync(nameof(CalendarVm).Replace("Vm", "Page"),
-            new Dictionary<string, object> { { "year", Year }, { "day", day } });
+        var parameters = new Dictionary<string, object>
+        {
+            { "Year", Year },
+            { "Day", day }
+        };
+        await Shell.Current.GoToAsync("///DayPage", parameters);
     }
 
     private void RefreshCalendar()
