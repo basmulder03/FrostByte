@@ -13,7 +13,7 @@ public class SessionCookieHandler(IAuthService authService, ILogger<SessionCooki
         request.Headers.Remove("Cookie");
         if (string.IsNullOrEmpty(cookie)) return await base.SendAsync(request, ct);
         _logger.LogDebug("Adding session cookie to request");
-        request.Headers.TryAddWithoutValidation("Cookie", cookie);
+        request.Headers.TryAddWithoutValidation("Cookie", $"session={cookie}");
 
         return await base.SendAsync(request, ct);
     }

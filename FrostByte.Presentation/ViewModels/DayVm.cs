@@ -14,6 +14,8 @@ public partial class DayVm(IDayService dayService, ILogger<DayVm> logger) : Obse
 
     private PuzzleDto? _puzzle;
 
+    private string? _puzzleInput;
+
     private int _year;
 
     public int Year
@@ -34,10 +36,17 @@ public partial class DayVm(IDayService dayService, ILogger<DayVm> logger) : Obse
         set => SetProperty(ref _puzzle, value);
     }
 
+    public string? PuzzleInput
+    {
+        get => _puzzleInput;
+        set => SetProperty(ref _puzzleInput, value);
+    }
+
     [RelayCommand]
     private async Task LoadAsync()
     {
         _logger.LogInformation("Loading puzzle for year {Year}, day {Day}", Year, Day);
         Puzzle = await dayService.GetPuzzleAsync(Year, Day);
+        PuzzleInput = await dayService.GetPuzzleInputAsync(Year, Day);
     }
 }

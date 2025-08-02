@@ -73,6 +73,37 @@ public class DayService(
         return await ParseHtmlToJsonAsync(year, day, resp);
     }
 
+    public async Task<string> GetPuzzleInputAsync(int year, int day, bool forceRefresh = false)
+    {
+        _logger.LogInformation("Fetching puzzle input for year {Year}, day {Day}", year, day);
+        var folder = _pathService.GetPuzzleYearFolder(year);
+        var inputFile = Path.Combine(folder, $"day{day}_input.txt");
+        if (forceRefresh)
+        {
+            if (File.Exists(inputFile))
+            {
+                _logger.LogInformation("Deleting existing puzzle input file at {InputPath}", inputFile);
+                File.Delete(inputFile);
+            }
+
+            _logger.LogInformation("Puzzle input file deleted, fetching new input from server...");
+        }
+
+        if (File.Exists(inputFile))
+        {
+            _logger.LogInformation("Puzzle input file found at {InputPath}", inputFile);
+            return await File.ReadAllTextAsync(inputFile);
+        }
+
+        _logger.LogWarning("Puzzle input file not found for year {Year}, day {Day}. Fetching from server...", year,
+            day);
+        var input = await _adventOfCodeClient.GetPuzzleInputAsync(year, day);
+        Directory.CreateDirectory(folder);
+        await File.WriteAllTextAsync(inputFile, input);
+        _logger.LogInformation("Puzzle input fetched and saved to {InputPath}", inputFile);
+        return input;
+    }
+
     private async Task<PuzzleDto> ParseHtmlToJsonAsync(int year, int day, string html)
     {
         var dto = _puzzleTransformer.Transform(html, year, day);
