@@ -43,12 +43,9 @@ public partial class DayPage : ContentPage, IQueryAttributable
         puzzleView.BindingContext = _vm;
         puzzleView.SetBinding(PuzzleView.PuzzleProperty, nameof(DayVm.Puzzle));
 
-        Content = new VerticalStackLayout
-        {
-            Spacing = 10,
-            Padding = 10,
-            Children = { puzzleView }
-        };
+        // Set the PuzzleView directly as Content instead of wrapping it in a VerticalStackLayout
+        // This allows the ScrollView inside PuzzleView to properly determine its constraints
+        Content = puzzleView;
 
         _logger.LogInformation("DayPage initialized for year {Year}, day {Day}", _vm.Year, _vm.Day);
 

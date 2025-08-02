@@ -19,14 +19,18 @@ public partial class PuzzleView : ContentView
         _stack = new VerticalStackLayout
         {
             Spacing = 10,
-            Padding = new Thickness(10)
+            Padding = new Thickness(10),
+            VerticalOptions = LayoutOptions.Start,
+            HorizontalOptions = LayoutOptions.Fill
         };
         Content = new ScrollView
         {
             Content = _stack,
             Orientation = ScrollOrientation.Vertical,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Default
+            VerticalScrollBarVisibility = ScrollBarVisibility.Default,
+            VerticalOptions = LayoutOptions.Fill,
+            HorizontalOptions = LayoutOptions.Fill
         };
     }
 
