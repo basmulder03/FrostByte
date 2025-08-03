@@ -22,6 +22,8 @@ public static class ServiceCollectionExtensions
                 .AddTransient<DayVm>()
                 // Controls
                 .AddTransient<PuzzleView>()
+                .AddTransient<SinglePartPuzzleView>()
+                .AddTransient<TabBarView>()
                 .AddTransient<CodeBlockView>()
                 .AddTransient<PartHeaderView>()
                 .AddTransient<PuzzleTitleView>()
@@ -29,6 +31,7 @@ public static class ServiceCollectionExtensions
                 .AddTransient<PuzzlePartView>()
                 // View Factories
                 .AddTransient<Func<PuzzleView>>(sp => sp.GetRequiredService<PuzzleView>)
+                .AddTransient<Func<SinglePartPuzzleView>>(sp => sp.GetRequiredService<SinglePartPuzzleView>)
                 .AddTransient<Func<CodeBlockView>>(sp => sp.GetRequiredService<CodeBlockView>)
                 .AddTransient<Func<PartHeaderView>>(sp => sp.GetRequiredService<PartHeaderView>)
                 .AddTransient<Func<PuzzleTitleView>>(sp => sp.GetRequiredService<PuzzleTitleView>)
