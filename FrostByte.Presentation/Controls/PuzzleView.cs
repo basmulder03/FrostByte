@@ -10,11 +10,14 @@ public partial class PuzzleView : ContentView
             propertyChanged: OnPuzzleChanged);
 
     private readonly ILogger<PuzzleView> _logger;
+    private readonly Func<PuzzlePartView> _puzzlePartViewFactory;
 
     private readonly VerticalStackLayout _stack;
 
-    public PuzzleView(ILogger<PuzzleView> logger)
+    public PuzzleView(Func<PuzzlePartView> puzzlePartViewFactory, ILogger<PuzzleView> logger)
     {
+        _puzzlePartViewFactory =
+            puzzlePartViewFactory ?? throw new ArgumentNullException(nameof(puzzlePartViewFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _stack = new VerticalStackLayout
         {
@@ -60,10 +63,8 @@ public partial class PuzzleView : ContentView
         // Add parts
         foreach (var part in dto.Parts)
         {
-            var partView = new PuzzlePartView
-            {
-                Part = part
-            };
+            var partView = _puzzlePartViewFactory();
+            partView.Part = part;
             _stack.Add(partView);
         }
     }

@@ -22,7 +22,18 @@ public static class ServiceCollectionExtensions
                 .AddTransient<DayVm>()
                 // Controls
                 .AddTransient<PuzzleView>()
+                .AddTransient<CodeBlockView>()
+                .AddTransient<PartHeaderView>()
+                .AddTransient<PuzzleTitleView>()
+                .AddTransient<FormattedTextView>()
+                .AddTransient<PuzzlePartView>()
+                // View Factories
                 .AddTransient<Func<PuzzleView>>(sp => sp.GetRequiredService<PuzzleView>)
+                .AddTransient<Func<CodeBlockView>>(sp => sp.GetRequiredService<CodeBlockView>)
+                .AddTransient<Func<PartHeaderView>>(sp => sp.GetRequiredService<PartHeaderView>)
+                .AddTransient<Func<PuzzleTitleView>>(sp => sp.GetRequiredService<PuzzleTitleView>)
+                .AddTransient<Func<FormattedTextView>>(sp => sp.GetRequiredService<FormattedTextView>)
+                .AddTransient<Func<PuzzlePartView>>(sp => sp.GetRequiredService<PuzzlePartView>)
             ;
     }
 }

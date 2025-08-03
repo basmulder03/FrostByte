@@ -1,4 +1,5 @@
 ﻿using FrostByte.Application.Models;
+using Microsoft.Extensions.Logging;
 
 namespace FrostByte.Presentation.Controls;
 
@@ -8,8 +9,11 @@ public partial class FormattedTextView : ContentView
         BindableProperty.Create(nameof(TextElements), typeof(IList<Text>), typeof(FormattedTextView),
             propertyChanged: OnTextElementsChanged);
 
-    public FormattedTextView()
+    private readonly ILogger<FormattedTextView> _logger;
+
+    public FormattedTextView(ILogger<FormattedTextView> logger)
     {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         Content = new Label
         {
             FontSize = 16,
@@ -94,10 +98,7 @@ public partial class FormattedTextView : ContentView
                 {
                     new TapGestureRecognizer
                     {
-                        Command = new Command(() =>
-                        {
-                            /* Handle link tap */
-                        })
+                        Command = new Command(() => { _logger.LogInformation("Link tapped: {Url}", linkText.Url); })
                     }
                 },
                 TextColor = Colors.Blue

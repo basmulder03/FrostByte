@@ -8,10 +8,14 @@ public partial class PuzzlePartView : ContentView
         BindableProperty.Create(nameof(Part), typeof(PartDto), typeof(PuzzlePartView),
             propertyChanged: OnPartChanged);
 
+    private readonly Func<FormattedTextView> _formattedTextViewFactory;
+
     private readonly VerticalStackLayout _stack;
 
-    public PuzzlePartView()
+    public PuzzlePartView(Func<FormattedTextView> formattedTextViewFactory)
     {
+        _formattedTextViewFactory = formattedTextViewFactory ??
+                                    throw new ArgumentNullException(nameof(formattedTextViewFactory));
         _stack = new VerticalStackLayout
         {
             Spacing = 5
@@ -48,10 +52,8 @@ public partial class PuzzlePartView : ContentView
             switch (block)
             {
                 case ParagraphBlock paragraph:
-                    var formattedText = new FormattedTextView
-                    {
-                        TextElements = paragraph.Text
-                    };
+                    var formattedText = _formattedTextViewFactory();
+                    formattedText.TextElements = paragraph.Text;
                     _stack.Add(formattedText);
                     break;
 
