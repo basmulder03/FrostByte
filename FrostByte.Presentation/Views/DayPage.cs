@@ -96,9 +96,9 @@ public partial class DayPage : ContentPage, IQueryAttributable
         _tabBar = new TabBarView
         {
             Tabs = new ObservableCollection<TabItem>(),
-            IsVisible = false // Hide initially until data loads
+            IsVisible = false, // Hide initially until data loads
+            TabSelectedCommand = new Command<int>(index => OnTabSelected(index))
         };
-        _tabBar.TabSelectedCommand = new Command<int>(OnTabSelected);
 
         // Content area
         _contentView = new ContentView
