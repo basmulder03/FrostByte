@@ -25,7 +25,7 @@ public partial class CalendarVm : ObservableObject
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _year = timeProvider.GetUtcNow().Year;
         DayCells = [];
-        Task.Run(async () => await RefreshCalendar());
+        _ = RefreshCalendar();
         _logger.LogInformation("CalendarVm initialized for year {Year}", _year);
     }
 
