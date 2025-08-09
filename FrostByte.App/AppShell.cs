@@ -53,7 +53,13 @@ public partial class AppShell : Shell
         Items.Add(shellContent);
     }
 
-    private async void OnAuthenticationRequired(object? sender, EventArgs e)
+    private void OnAuthenticationRequired(object? sender, EventArgs e)
+    {
+        // Fire-and-forget async work, log exceptions
+        _ = HandleAuthenticationRequiredAsync();
+    }
+
+    private async Task HandleAuthenticationRequiredAsync()
     {
         try
         {
