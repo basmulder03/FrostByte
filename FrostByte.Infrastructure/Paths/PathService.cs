@@ -19,7 +19,8 @@ public class PathService(Task<WorkbenchSettings> settingsTask) : IPathService
     public async Task<string> GetPuzzleCacheRootAsync()
     {
         var settings = await _settingsTask;
-        var appDataRoot = await GetAppDataRootAsync();
+        var appDataRoot = settings.AppDataFolder;
+        if (!Directory.Exists(appDataRoot)) Directory.CreateDirectory(appDataRoot);
         var cache = Path.Combine(appDataRoot, settings.CacheFolderName);
         if (!Directory.Exists(cache)) Directory.CreateDirectory(cache);
         return cache;
