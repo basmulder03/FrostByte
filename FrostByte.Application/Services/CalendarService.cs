@@ -65,7 +65,6 @@ public class CalendarService : ICalendarService
 
         var currentUtc = _timeProvider.GetUtcNow();
 
-        // More efficient date construction using DateTimeOffset constructor with UTC offset (TimeSpan.Zero)
         var settings = await _settings;
         var openUtc = new DateTimeOffset(
             year,
