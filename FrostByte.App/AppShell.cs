@@ -1,22 +1,27 @@
-﻿using FrostByte.Application.Services;
+﻿using FrostByte.Presentation.ViewModels;
 using FrostByte.Presentation.Views;
 
 namespace FrostByte.App;
 
 public partial class AppShell : Shell
 {
-    private readonly IAuthService _authService;
+    private readonly Func<Page> _authPageFactory;
+    private readonly AppShellVm _vm;
 
     public AppShell(Func<CalendarPage> calendarPageFactory, Func<DayPage> dayPageFactory,
-        Func<AuthPage> authPageFactory, IAuthService authService)
+        Func<AuthPage> authPageFactory, AppShellVm vm)
     {
-        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        _vm = vm ?? throw new ArgumentNullException(nameof(vm));
+        _authPageFactory = authPageFactory ?? throw new ArgumentNullException(nameof(authPageFactory));
 
         FlyoutIsPresented = false;
         FlyoutBehavior = FlyoutBehavior.Disabled;
         AddPageToShell(calendarPageFactory, "CalendarPage", false);
         AddPageToShell(dayPageFactory, "DayPage", false);
-        _ = EnsureSignedInAsync(authPageFactory);
+
+        // Subscribe to the authentication required event
+        _vm.AuthenticationRequired += OnAuthenticationRequired;
+        _ = _vm.CheckAuthenticationAsync();
     }
 
     private void AddPageToShell(Func<Page> pageFactory, string route, bool navBarVisible)
@@ -31,10 +36,8 @@ public partial class AppShell : Shell
         Items.Add(shellContent);
     }
 
-    private async Task EnsureSignedInAsync(Func<AuthPage> authPageFactory)
+    private async void OnAuthenticationRequired(object? sender, EventArgs e)
     {
-        if (!await _authService.IsAuthenticatedAsync())
-            // present AuthPage modally
-            await Navigation.PushModalAsync(authPageFactory());
+        await Navigation.PushModalAsync(_authPageFactory());
     }
 }
