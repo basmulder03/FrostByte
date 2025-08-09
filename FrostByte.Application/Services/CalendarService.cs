@@ -24,13 +24,14 @@ public class CalendarService : ICalendarService
         if (year < 1)
         {
             _logger.LogWarning("Invalid year {Year} requested for GetDays", year);
-            return [];
+            yield break;
         }
 
         _logger.LogDebug("Getting days for year {Year}", year);
 
         // Use iterator block for efficient repeated enumeration
-        for (int day = 1; day <= AdventOfCodeMaxDay; day++)
+        const int AdventOfCodeMaxDay = 25; // Maximum day in Advent of Code calendar
+        for (var day = 1; day <= AdventOfCodeMaxDay; day++)
             yield return day;
     }
 
