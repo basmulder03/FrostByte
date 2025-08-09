@@ -1,24 +1,46 @@
-﻿using FrostByte.Application.Services;
+﻿using FrostByte.Presentation.ViewModels;
 using FrostByte.Presentation.Views;
+using Microsoft.Extensions.Logging;
 
 namespace FrostByte.App;
 
 public partial class AppShell : Shell
 {
-    private readonly IAuthService _authService;
+    private readonly Func<Page> _authPageFactory;
+    private readonly ILogger<AppShell> _logger;
+    private readonly AppShellVm _vm;
 
     public AppShell(Func<CalendarPage> calendarPageFactory, Func<DayPage> dayPageFactory,
-        Func<AuthPage> authPageFactory, IAuthService authService)
+        Func<AuthPage> authPageFactory, AppShellVm vm, ILogger<AppShell> logger)
     {
-        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        _vm = vm ?? throw new ArgumentNullException(nameof(vm));
+        _authPageFactory = authPageFactory ?? throw new ArgumentNullException(nameof(authPageFactory));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         FlyoutIsPresented = false;
         FlyoutBehavior = FlyoutBehavior.Disabled;
         AddPageToShell(calendarPageFactory, "CalendarPage", false);
         AddPageToShell(dayPageFactory, "DayPage", false);
-        _ = EnsureSignedInAsync(authPageFactory);
+
+        // Subscribe to the authentication required event
+        _vm.AuthenticationRequired += OnAuthenticationRequired;
+        // Removed fire-and-forget authentication check. Use InitializeAsync after construction.
     }
 
+    /// <summary>
+    /// Performs initial authentication check. Call this after constructing AppShell.
+    /// </summary>
+    public async Task InitializeAsync()
+    {
+        try
+        {
+            await _vm.CheckAuthenticationAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed during initial authentication check.");
+        }
+    }
     private void AddPageToShell(Func<Page> pageFactory, string route, bool navBarVisible)
     {
         var shellContent = new ShellContent
@@ -31,10 +53,21 @@ public partial class AppShell : Shell
         Items.Add(shellContent);
     }
 
-    private async Task EnsureSignedInAsync(Func<AuthPage> authPageFactory)
+    private void OnAuthenticationRequired(object? sender, EventArgs e)
     {
-        if (!await _authService.IsAuthenticatedAsync())
-            // present AuthPage modally
-            await Navigation.PushModalAsync(authPageFactory());
+        // Fire-and-forget async work, log exceptions
+        _ = HandleAuthenticationRequiredAsync();
+    }
+
+    private async Task HandleAuthenticationRequiredAsync()
+    {
+        try
+        {
+            await Navigation.PushModalAsync(_authPageFactory());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to navigate to authentication page.");
+        }
     }
 }
