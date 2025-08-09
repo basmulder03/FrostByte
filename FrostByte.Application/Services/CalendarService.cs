@@ -29,8 +29,9 @@ public class CalendarService : ICalendarService
 
         _logger.LogDebug("Getting days for year {Year}", year);
 
-        // Use Enumerable.Range for better performance and readability
-        return Enumerable.Range(1, 25);
+        // Use iterator block for efficient repeated enumeration
+        for (int day = 1; day <= 25; day++)
+            yield return day;
     }
 
     public async Task<bool> YearAvailable(int year)
