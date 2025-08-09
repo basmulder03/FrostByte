@@ -24,9 +24,23 @@ public partial class AppShell : Shell
 
         // Subscribe to the authentication required event
         _vm.AuthenticationRequired += OnAuthenticationRequired;
-        Task.Run(async () => await _vm.CheckAuthenticationAsync());
+        // Removed fire-and-forget authentication check. Use InitializeAsync after construction.
     }
 
+    /// <summary>
+    /// Performs initial authentication check. Call this after constructing AppShell.
+    /// </summary>
+    public async Task InitializeAsync()
+    {
+        try
+        {
+            await _vm.CheckAuthenticationAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed during initial authentication check.");
+        }
+    }
     private void AddPageToShell(Func<Page> pageFactory, string route, bool navBarVisible)
     {
         var shellContent = new ShellContent
