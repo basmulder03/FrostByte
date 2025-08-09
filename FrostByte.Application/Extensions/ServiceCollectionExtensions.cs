@@ -24,12 +24,12 @@ public static class ServiceCollectionExtensions
             .AddSingleton(TimeProvider.System)
 
             // Register an asynchronous factory for WorkbenchSettings
-            // Consumers can resolve Task<WorkbenchSettings> and await it.
-            .AddSingleton<Task<WorkbenchSettings>>(async sp =>
+            // Uses Task.Run to ensure a single Task instance is created and shared
+            .AddSingleton<Task<WorkbenchSettings>>(sp => Task.Run(async () =>
             {
                 var settingsService = sp.GetRequiredService<ISettingsService>();
                 return await settingsService.LoadAsync().ConfigureAwait(false);
-            });
+            }));
 
         // Register AdventOfCodeHttpClient as a typed client
         const string baseUrl = "https://adventofcode.com/";
