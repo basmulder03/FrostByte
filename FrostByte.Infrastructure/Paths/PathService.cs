@@ -1,34 +1,34 @@
 ﻿using FrostByte.Application.Configuration;
+using FrostByte.Application.Paths;
 
 namespace FrostByte.Infrastructure.Paths;
 
-public class PathService(Task<WorkbenchSettings> settings) : IPathService
+public class PathService(Task<WorkbenchSettings> settingsTask) : IPathService
 {
-    private readonly WorkbenchSettings _settings = settings.Result ?? throw new ArgumentNullException(nameof(settings));
+    private readonly Task<WorkbenchSettings> _settingsTask =
+        settingsTask ?? throw new ArgumentNullException(nameof(settingsTask));
 
-    public string AppDataRoot
+    public async Task<string> GetAppDataRootAsync()
     {
-        get
-        {
-            var root = _settings.AppDataFolder;
-            if (!Directory.Exists(root)) Directory.CreateDirectory(root);
-            return root;
-        }
+        var settings = await _settingsTask;
+        var root = settings.AppDataFolder;
+        if (!Directory.Exists(root)) Directory.CreateDirectory(root);
+        return root;
     }
 
-    public string PuzzleCacheRoot
+    public async Task<string> GetPuzzleCacheRootAsync()
     {
-        get
-        {
-            var cache = Path.Combine(AppDataRoot, _settings.CacheFolderName);
-            if (!Directory.Exists(cache)) Directory.CreateDirectory(cache);
-            return cache;
-        }
+        var settings = await _settingsTask;
+        var appDataRoot = await GetAppDataRootAsync();
+        var cache = Path.Combine(appDataRoot, settings.CacheFolderName);
+        if (!Directory.Exists(cache)) Directory.CreateDirectory(cache);
+        return cache;
     }
 
-    public string GetPuzzleYearFolder(int year)
+    public async Task<string> GetPuzzleYearFolderAsync(int year)
     {
-        var yearFolder = Path.Combine(PuzzleCacheRoot, year.ToString());
+        var cacheRoot = await GetPuzzleCacheRootAsync();
+        var yearFolder = Path.Combine(cacheRoot, year.ToString());
         if (!Directory.Exists(yearFolder)) Directory.CreateDirectory(yearFolder);
         return yearFolder;
     }

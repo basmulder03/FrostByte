@@ -25,7 +25,7 @@ public partial class CalendarVm : ObservableObject
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _year = timeProvider.GetUtcNow().Year;
         DayCells = [];
-        RefreshCalendar();
+        Task.Run(async () => await RefreshCalendar());
         _logger.LogInformation("CalendarVm initialized for year {Year}", _year);
     }
 
@@ -50,21 +50,21 @@ public partial class CalendarVm : ObservableObject
     public ObservableCollection<DayCell> DayCells { get; }
 
     [RelayCommand]
-    private void PrevYear()
+    private async Task PrevYear()
     {
         _logger.LogDebug("Moving to previous year: {Year}", Year - 1);
         if (!HasPreviousYear) return;
         Year--;
-        RefreshCalendar();
+        await RefreshCalendar();
     }
 
     [RelayCommand]
-    private void NextYear()
+    private async Task NextYear()
     {
         _logger.LogDebug("Moving to next year: {Year}", Year + 1);
         if (!HasNextYear) return;
         Year++;
-        RefreshCalendar();
+        await RefreshCalendar();
     }
 
     [RelayCommand]
@@ -80,18 +80,18 @@ public partial class CalendarVm : ObservableObject
         await Shell.Current.GoToAsync("///DayPage", parameters);
     }
 
-    private void RefreshCalendar()
+    private async Task RefreshCalendar()
     {
         _logger.LogDebug("Refreshing calendar for year {Year}", Year);
         DayCells.Clear();
         foreach (var day in _calendarService.GetDays(Year))
         {
-            var isUnlocked = _calendarService.IsUnlocked(Year, day);
+            var isUnlocked = await _calendarService.IsUnlocked(Year, day);
             DayCells.Add(new DayCell(day, isUnlocked));
         }
 
-        HasPreviousYear = _calendarService.YearAvailable(Year - 1);
-        HasNextYear = _calendarService.YearAvailable(Year + 1);
+        HasPreviousYear = await _calendarService.YearAvailable(Year - 1);
+        HasNextYear = await _calendarService.YearAvailable(Year + 1);
         _logger.LogInformation("Calendar refreshed for year {Year} with {DayCount} days", Year, DayCells.Count);
     }
 }

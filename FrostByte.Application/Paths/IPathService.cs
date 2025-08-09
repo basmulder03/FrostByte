@@ -1,19 +1,19 @@
-﻿namespace FrostByte.Infrastructure.Paths;
+﻿namespace FrostByte.Application.Paths;
 
 public interface IPathService
 {
     /// <summary>
-    /// Root folder for the application data.
+    ///     Root folder for the application data.
     /// </summary>
-    public string AppDataRoot { get; }
+    Task<string> GetAppDataRootAsync();
 
     /// <summary>
-    /// Folder where puzzle data is cached.
+    ///     Folder where puzzle data is cached.
     /// </summary>
-    public string PuzzleCacheRoot { get; }
+    Task<string> GetPuzzleCacheRootAsync();
 
     /// <summary>
-    /// Folder under puzzle root cache for a specific year.
+    ///     Folder under puzzle root cache for a specific year.
     /// </summary>
-    public string GetPuzzleYearFolder(int year);
+    Task<string> GetPuzzleYearFolderAsync(int year);
 }
