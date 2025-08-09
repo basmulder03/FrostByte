@@ -2,19 +2,16 @@
 
 namespace FrostByte.Infrastructure.Paths;
 
-public class PathService(WorkbenchSettings settings) : IPathService
+public class PathService(Task<WorkbenchSettings> settings) : IPathService
 {
-    private readonly WorkbenchSettings _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+    private readonly WorkbenchSettings _settings = settings.Result ?? throw new ArgumentNullException(nameof(settings));
 
     public string AppDataRoot
     {
         get
         {
             var root = _settings.AppDataFolder;
-            if (!Directory.Exists(root))
-            {
-                Directory.CreateDirectory(root);
-            }
+            if (!Directory.Exists(root)) Directory.CreateDirectory(root);
             return root;
         }
     }
@@ -24,21 +21,15 @@ public class PathService(WorkbenchSettings settings) : IPathService
         get
         {
             var cache = Path.Combine(AppDataRoot, _settings.CacheFolderName);
-            if (!Directory.Exists(cache))
-            {
-                Directory.CreateDirectory(cache);
-            }
+            if (!Directory.Exists(cache)) Directory.CreateDirectory(cache);
             return cache;
         }
     }
 
     public string GetPuzzleYearFolder(int year)
     {
-        var folder = Path.Combine(PuzzleCacheRoot, year.ToString());
-        if (!Directory.Exists(folder))
-        {
-            Directory.CreateDirectory(folder);
-        }
-        return folder;
+        var yearFolder = Path.Combine(PuzzleCacheRoot, year.ToString());
+        if (!Directory.Exists(yearFolder)) Directory.CreateDirectory(yearFolder);
+        return yearFolder;
     }
 }
