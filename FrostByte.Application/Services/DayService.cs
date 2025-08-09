@@ -2,7 +2,7 @@
 using FrostByte.Application.Clients;
 using FrostByte.Application.Models;
 using FrostByte.Application.Parsing;
-using FrostByte.Infrastructure.Paths;
+using FrostByte.Application.Paths;
 using Microsoft.Extensions.Logging;
 
 namespace FrostByte.Application.Services;
@@ -32,7 +32,7 @@ public class DayService(
     public async Task<PuzzleDto> GetPuzzleAsync(int year, int day, bool forceRefresh = false)
     {
         _logger.LogInformation("Fetching puzzle for year {Year}, day {Day}", year, day);
-        var folder = _pathService.GetPuzzleYearFolder(year);
+        var folder = await _pathService.GetPuzzleYearFolderAsync(year);
         var jsonFile = Path.Combine(folder, $"day{day}.json");
         var htmlFile = Path.Combine(folder, $"day{day}.html");
 
@@ -76,7 +76,7 @@ public class DayService(
     public async Task<string> GetPuzzleInputAsync(int year, int day, bool forceRefresh = false)
     {
         _logger.LogInformation("Fetching puzzle input for year {Year}, day {Day}", year, day);
-        var folder = _pathService.GetPuzzleYearFolder(year);
+        var folder = await _pathService.GetPuzzleYearFolderAsync(year);
         var inputFile = Path.Combine(folder, $"day{day}_input.txt");
         if (forceRefresh)
         {
@@ -107,7 +107,7 @@ public class DayService(
     private async Task<PuzzleDto> ParseHtmlToJsonAsync(int year, int day, string html)
     {
         var dto = _puzzleTransformer.Transform(html, year, day);
-        var jsonFile = Path.Combine(_pathService.GetPuzzleYearFolder(year), $"day{day}.json");
+        var jsonFile = Path.Combine(await _pathService.GetPuzzleYearFolderAsync(year), $"day{day}.json");
         await WriteJsonFileAsync(jsonFile, dto);
         return dto;
     }

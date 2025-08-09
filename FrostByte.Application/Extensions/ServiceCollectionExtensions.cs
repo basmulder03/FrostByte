@@ -23,17 +23,13 @@ public static class ServiceCollectionExtensions
             // Add TimeProvider
             .AddSingleton(TimeProvider.System)
 
-            // load settings once, and cache
-            .AddSingleton<WorkbenchSettings>(sp =>
+            // Register an asynchronous factory for WorkbenchSettings
+            // Uses Task.Run to ensure a single Task instance is created and shared
+            .AddSingleton<Task<WorkbenchSettings>>(sp => Task.Run(async () =>
             {
-                var settingsSvc = sp.GetRequiredService<ISettingsService>();
-                // Be sure to use ConfigureAwait(false) to avoid deadlocks
-                return settingsSvc.LoadAsync()
-                    .AsTask()
-                    .ConfigureAwait(false)
-                    .GetAwaiter()
-                    .GetResult();
-            });
+                var settingsService = sp.GetRequiredService<ISettingsService>();
+                return await settingsService.LoadAsync().ConfigureAwait(false);
+            }));
 
         // Register AdventOfCodeHttpClient as a typed client
         const string baseUrl = "https://adventofcode.com/";
