@@ -30,7 +30,7 @@ public class CalendarService : ICalendarService
         _logger.LogDebug("Getting days for year {Year}", year);
 
         // Use iterator block for efficient repeated enumeration
-        for (int day = 1; day <= 25; day++)
+        for (int day = 1; day <= AdventOfCodeMaxDay; day++)
             yield return day;
     }
 
