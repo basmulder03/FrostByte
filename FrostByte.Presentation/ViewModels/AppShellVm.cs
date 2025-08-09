@@ -10,8 +10,6 @@ namespace FrostByte.Presentation.ViewModels;
 /// </summary>
 public class AppShellVm(IAuthService authService)
 {
-    private readonly IAuthService _authService = authService;
-
     /// <summary>
     ///     Raised when the user is not authenticated and the UI should present
     ///     an authentication page.
@@ -24,7 +22,7 @@ public class AppShellVm(IAuthService authService)
     /// </summary>
     public async Task CheckAuthenticationAsync()
     {
-        var isAuthenticated = await _authService.IsAuthenticatedAsync();
+        var isAuthenticated = await authService.IsAuthenticatedAsync();
         if (!isAuthenticated) AuthenticationRequired?.Invoke(this, EventArgs.Empty);
     }
 }
