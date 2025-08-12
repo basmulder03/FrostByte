@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
-using FrostByte.App.Extendsions;
 using FrostByte.App.Extensions;
 using FrostByte.Application.Configuration;
 using FrostByte.Application.Extensions;

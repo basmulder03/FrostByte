@@ -1,7 +1,7 @@
 using FrostByte.Application.Configuration;
 using CommunityToolkit.Maui.Storage;
 
-namespace FrostByte.Infrastructure.Extensions;
+namespace FrostByte.Infrastructure.Services;
 
 public class WindowsSecretStore : ISecretStore
 {
