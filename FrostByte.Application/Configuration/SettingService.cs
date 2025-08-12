@@ -1,34 +1,37 @@
-﻿using System.Text.Json;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace FrostByte.Application.Configuration;
 
+/// <summary>
+/// Service for managing application settings, delegating persistence to <see cref="ISettingsStore"/>.
+/// </summary>
 public class SettingService : ISettingsService
 {
-    private static readonly JsonSerializerOptions _json = new()
-        { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    private readonly ISettingsStore _store;
 
-    private readonly string _filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-    // e.g. C:\Users\Me\AppData\Local\FrostByte\settings.json
-
-    public async ValueTask<WorkbenchSettings> LoadAsync(CancellationToken ct = default)
+    /// <summary>
+    /// Initializes a new instance of <see cref="SettingService"/>.
+    /// </summary>
+    /// <param name="store">The settings store for persistence.</param>
+    public SettingService(ISettingsStore store)
     {
-        if (!File.Exists(_filePath))
-        {
-            return new WorkbenchSettings();
-        }
-
-        await using var fs = File.OpenRead(_filePath);
-        return await JsonSerializer.DeserializeAsync<WorkbenchSettings>(fs, _json, ct)
-               ?? new WorkbenchSettings();
+        _store = store;
     }
 
-    public async ValueTask SaveAsync(WorkbenchSettings settings, CancellationToken ct = default)
-    {
-        var dir = Path.GetDirectoryName(_filePath)!;
-        Directory.CreateDirectory(dir);
+    /// <summary>
+    /// Loads settings from persistent storage via the settings store.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>The loaded <see cref="WorkbenchSettings"/> or a new instance if not found.</returns>
+    public ValueTask<WorkbenchSettings> LoadAsync(CancellationToken ct = default)
+        => _store.LoadAsync(ct);
 
-        await using var fs = File.Create(_filePath);
-        await JsonSerializer.SerializeAsync(fs, settings, _json, ct);
-    }
+    /// <summary>
+    /// Saves settings to persistent storage via the settings store.
+    /// </summary>
+    /// <param name="settings">The settings to save.</param>
+    /// <param name="ct">Cancellation token.</param>
+    public ValueTask SaveAsync(WorkbenchSettings settings, CancellationToken ct = default)
+        => _store.SaveAsync(settings, ct);
 }
