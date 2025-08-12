@@ -61,6 +61,11 @@ public class SettingsStore : ISettingsStore
     public async ValueTask SaveAsync(WorkbenchSettings settings, CancellationToken ct = default)
     {
         var filePath = await GetSettingsFilePathAsync();
+        var dirPath = Path.GetDirectoryName(filePath);
+        if (dirPath is not null)
+        {
+            Directory.CreateDirectory(dirPath);
+        }
         await using var fs = File.Create(filePath);
         await JsonSerializer.SerializeAsync(fs, settings, _json, ct);
     }
