@@ -11,7 +11,7 @@
         <PackageReference Include="CommunityToolkit.Maui.Markup" Version="6.0.1"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10"/>
-        <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.111"/>
+        <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120"/>
         <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3537.50"/>
     </ItemGroup>
 
