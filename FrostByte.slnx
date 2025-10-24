@@ -1,0 +1,13 @@
+﻿<Solution>
+  <Folder Name="/solution items/">
+    <File Path=".gitignore" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.build.props" />
+    <File Path="global.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="FrostByte.Core\FrostByte.Core.csproj" Type="Classic C#" />
+    <Project Path="FrostByte.Ide\FrostByte.Ide.csproj" Type="Classic C#" />
+    <Project Path="FrostByte.Plugins.Abstractions\FrostByte.Plugins.Abstractions.csproj" Type="Classic C#" />
+  </Folder>
+</Solution>
